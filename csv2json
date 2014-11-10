@@ -1,0 +1,27 @@
+#!/usr/bin/env coffee
+
+readline = require('readline')
+
+isEmpty = (str) -> !str || 0 == str.length
+
+convert = (line) ->
+  arr = line.trim().split(';')
+  o = {}
+  o.name = arr[0] unless isEmpty arr[0]
+  address = arr[1]
+  o.address = address unless isEmpty address
+  if isEmpty address.split(':')[1] 
+    o.type = "binary"
+  else
+    o.type = "dimmable"
+  o.vendor = "knx"
+  JSON.stringify(o)
+
+process.stdin.setEncoding 'utf8'
+rl = readline.createInterface( input: process.stdin, output: process.stdout, terminal: false )
+rl.on 'line', (line) -> console.log convert(line)
+
+process.stdout.on 'error', ( err ) -> 
+  if (err.code == "EPIPE") 
+     process.exit(0);
+    
